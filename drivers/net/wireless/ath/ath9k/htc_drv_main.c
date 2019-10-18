@@ -868,6 +868,19 @@ static void ath9k_htc_tx(struct ieee80211_hw *hw,
 	struct ath_common *common = ath9k_hw_common(priv->ah);
 	int padpos, padsize, ret, slot;
 
+	unsigned int valor_atual = priv->ah->reg_ops.read(priv, AR_D0_LCL_IFS);
+    valor_atual = (valor_atual & 0xffffe0) | 0x7; // cwmin = 7 nos bits 0 a 9
+    priv->ah->reg_ops.write(priv, AR_D0_LCL_IFS, valor_atual);
+
+	// priv->ah->reg_ops.write(priv, 7, 0); // CWMin
+	// priv->ah->reg_ops.write(priv, 15, 10); // CWMax
+
+	// ath9k_regwrite_single(priv, 7, 0); // CWMin
+ 	// ath9k_regwrite_single(priv, 15, 10); // CWMax
+
+	printk("Passou no tx");
+	printk((char *) valor_atual);
+
 	hdr = (struct ieee80211_hdr *) skb->data;
 
 	/* Add the padding after the header if this is not already done */
